@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>User Profile</h1>
+  <!-- Display user profile details -->
+    <p>Username: {{ user.first_name }}</p>
+    <p>Email: {{ user.email }}</p>
+
+    <h2>My Coach</h2>
+    {{ user.coach.user.first_name }} {{ user.coach.user.last_name }}
+
+  <a href="{% url 'user_update' %}" class="btn btn-primary">Edit</a>
+{% endblock %}
