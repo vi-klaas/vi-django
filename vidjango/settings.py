@@ -35,9 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'crispy_forms',
     'crispy_tailwind',
@@ -57,6 +56,7 @@ INSTALLED_APPS = [
     # 'allauth.socialaccount.providers.apple',
 
     'accounts',
+    'pages',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
