@@ -33,7 +33,19 @@ class User(AbstractUser):
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     shipping_address = models.ForeignKey('ShippingAddress', related_name="shipping_user", on_delete=models.SET_NULL, null=True, blank=True)
     billing_address = models.ForeignKey('BillingAddress', related_name="billing_user", on_delete=models.SET_NULL, null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    mobile = models.CharField(max_length=20, null=True, blank=True)
 
     @property
     def full_name(self):
+        """
+        Return the full name of the user.
+
+        :return: The full name of the user as a string.
+        """
         return f"{self.first_name} {self.last_name}"
+
+    def __str__(self):
+        return self.username
+
+

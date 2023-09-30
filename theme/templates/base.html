@@ -12,6 +12,7 @@
     <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet" type="text/css">
 
     {% tailwind_css %}
 </head>
@@ -112,7 +113,8 @@
 <!-- Include Vue.js -->
 <script src="https://unpkg.com/vue@next"></script>
 
-<script>
+<script type="module">
+    {#import VideoWatchComponent from "/static/js/video_watch_component.js";#}
     const app = Vue.createApp({
         data() {
             return {
@@ -127,6 +129,9 @@
             toggleSidebar() {
                 this.showSidebar = !this.showSidebar;
             }
+        },
+        components: {
+            {#'video-watch': VideoWatchComponent#}
         }
     })
 

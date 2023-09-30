@@ -1,27 +1,51 @@
 version: '3.8'
 
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
   db:
-    image: postgres:13.1
+    image: postgres:latest
+    env_file:
+      - .env
     environment:
-      - POSTGRES_DB=postgres
-#      - POSTGRES_USER=postgres
-#      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  web:
+  tailwind:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    env_file: .env
+    command: "python manage.py tailwind start"
+    tty: true
     volumes:
       - .:/code
+      - media_storage:/media
+    ports:
+      - "8383:8383"
+    depends_on:
+      - db
+  web:
+    build: .
+    env_file: .env
+    command: ["sh", "./start.sh"]
+    volumes:
+      - .:/code
+      - media_storage:/media
     ports:
       - "8000:8000"
     depends_on:
       - db
+      - tailwind
+      - rabbitmq
 volumes:
     postgres_data:
+    media_storage:
 

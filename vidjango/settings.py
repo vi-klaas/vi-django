@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,8 +35,12 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.sessions',
     'django.contrib.staticfiles',
+    'django.contrib.messages',
     'django.contrib.sites',
+
+    # 'django_dramatiq',  # django_dramatiq should be placed before your apps
 
     'crispy_forms',
     'crispy_tailwind',
@@ -46,6 +50,7 @@ INSTALLED_APPS = [
     'fontawesomefree',
 
     'debug_toolbar',
+    'puml_generator',
 
     # allauth
     'allauth',
@@ -55,13 +60,20 @@ INSTALLED_APPS = [
     # 'allauth.socialaccount.providers.facebook'
     # 'allauth.socialaccount.providers.apple',
 
-    'accounts',
-    'pages',
+    # local apps
+    'accounts.apps.AccountsConfig',
+    'pages.apps.PagesConfig',
 ]
 
+
+CRISPY_TEMPLATE_PACK = 'tailwind'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+TAILWIND_APP_NAME = 'theme'
+NPM_BIN_PATH = '/usr/bin/npm'
 
 AUTH_USER_MODEL = 'accounts.User'
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -73,6 +85,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_browser_reload.middleware.BrowserReloadMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'vidjango.urls'
@@ -161,8 +174,42 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Media Folder Settings
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# task queue
+# DRAMATIQ_BROKER = {
+#     'BROKER': "dramatiq.brokers.rabbitmq.RabbitmqBroker",
+#     'OPTIONS': {
+#         'url': 'amqp://guest:guest@rabbitmq:5672/',
+#     },
+#     'MIDDLEWARE': [
+#         'dramatiq.middleware.Prometheus',
+#         'dramatiq.middleware.AgeLimit',
+#         'dramatiq.middleware.TimeLimit',
+#         'dramatiq.middleware.Callbacks',
+#         'dramatiq.middleware.Retries',
+#         'django_dramatiq.middleware.DbConnectionsMiddleware',
+#         'django_dramatiq.middleware.AdminMiddleware',
+#     ]
+# }
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+if DEBUG:
+    import socket  # only if you haven't already imported this
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + ["127.0.0.1", "10.0.2.2"]
