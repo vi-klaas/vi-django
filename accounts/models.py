@@ -5,13 +5,22 @@ from mixins.uuid_model_mixin import UUIDMixin
 
 
 # Create your models here.
+class Profile(UUIDMixin, models.Model):
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    mobile = models.CharField(max_length=20, null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
 class Address(UUIDMixin, models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     state = models.CharField(max_length=255, null=True, blank=True)
     zip_code = models.CharField(max_length=10)
     country = models.CharField(max_length=255)
+    is_default = models.BooleanField(default=False)
 
     @property
     def full_address(self):
@@ -21,20 +30,7 @@ class Address(UUIDMixin, models.Model):
         abstract = True
 
 
-class ShippingAddress(Address):
-    pass
-
-
-class BillingAddress(Address):
-    pass
-
-
 class User(AbstractUser):
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    shipping_address = models.ForeignKey('ShippingAddress', related_name="shipping_user", on_delete=models.SET_NULL, null=True, blank=True)
-    billing_address = models.ForeignKey('BillingAddress', related_name="billing_user", on_delete=models.SET_NULL, null=True, blank=True)
-    phone = models.CharField(max_length=20, null=True, blank=True)
-    mobile = models.CharField(max_length=20, null=True, blank=True)
 
     @property
     def full_name(self):
@@ -49,3 +45,9 @@ class User(AbstractUser):
         return self.username
 
 
+class ShippingAddress(Address):
+    user = models.ForeignKey(User, related_name="shipping_address", on_delete=models.SET_NULL, null=True, blank=True)
+
+
+class BillingAddress(Address):
+    user = models.ForeignKey(User, related_name="billing_address", on_delete=models.SET_NULL, null=True, blank=True)
