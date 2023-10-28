@@ -82,6 +82,7 @@ limit-inference-results=100
 # List of plugins (as comma separated values of python module names) to load,
 # usually to register additional checkers.
 load-plugins=pylint_django
+django-settings-module=vidjango.settings
 
 # Pickle collected data for later comparisons.
 persistent=yes
@@ -189,6 +190,9 @@ good-names=i,
            j,
            k,
            ex,
+           e,
+           m,
+           msg,
            Run,
            _
 
@@ -337,7 +341,7 @@ indent-after-paren=4
 indent-string='    '
 
 # Maximum number of characters on a single line.
-max-line-length=100
+max-line-length=120
 
 # Maximum number of lines in a module.
 max-module-lines=1000
@@ -355,7 +359,7 @@ single-line-if-stmt=no
 
 # List of modules that can be imported at any level, not just the top level
 # one.
-allow-any-import-level=
+allow-any-import-level=yes
 
 # Allow explicit reexports by alias from a package __init__.
 allow-reexport-from-package=no

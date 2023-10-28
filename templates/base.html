@@ -24,10 +24,10 @@
             <!-- Make sure you replace 'your-logo-file.png' with your actual logo filename -->
 
             <img src="{% static 'your-logo-file.png' %}" class="fill-current h-8 w-8 mr-2" width="54" height="54"/>
-{#            <span class="font-semibold text-xl tracking-tight">Your Website</span>#}
+            {#            <span class="font-semibold text-xl tracking-tight">Your Website</span>#}
             <button @click="toggleSidebar" class="bg-amber-500">
-            toggle sidebar
-        </button>
+                toggle sidebar
+            </button>
         </div>
         <!-- Menu -->
         <div class="">
@@ -66,7 +66,8 @@
                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Coach Profile</a>
                                 {% elif user.client %}
                                     <a href="{% url 'clients:client_detail' user.client.pk %}"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Client Profile</a>
+                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Client
+                                        Profile</a>
                                 {% endif %}
                                 <a href="{% url 'account_logout' %}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
@@ -112,7 +113,7 @@
             return {
                 showDropdown: false,
                 showSidebar: false,
-            }
+            };
         },
         methods: {
             toggleDropdown() {
@@ -122,7 +123,7 @@
                 this.showSidebar = !this.showSidebar;
             }
         }
-    })
+    });
 
     app.mount('#app');
 </script>

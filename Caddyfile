@@ -1,0 +1,21 @@
+localhost {
+  handle_path /static/* {
+    root * /staticfiles
+    file_server
+  }
+
+  handle_path /media/* {
+      root * /media
+      file_server
+    }
+
+  @app {
+    not path /theme/static/*
+    not path /static/*
+    not path /media/*
+  }
+
+  reverse_proxy @app {
+    to web:8000
+  }
+}

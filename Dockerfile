@@ -23,7 +23,9 @@ RUN apt-get update \
     gettext \
     git \
     libpq-dev \
-    wget
+    wget \
+    procps \
+    netcat \
     # ffmpeg \
   # Install Node.js: \
   #&& mkdir -p /etc/apt/keyrings \
@@ -31,16 +33,17 @@ RUN apt-get update \
   #&& NODE_MAJOR=20 \
   #&& echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list \
   #&& curl -sL https://deb.nodesource.com/setup_20.x | bash - \
-RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
+  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
   && VERSION=node_20.x \
   && DISTRO="bullseye" \
   && echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" | tee /etc/apt/sources.list.d/nodesource.list \
-  && echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | tee -a /etc/apt/sources.list.d/nodesource.list
-RUN apt-get update && apt-get install -y nodejs \
-  && npm install -g npm@latest
+  && echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | tee -a /etc/apt/sources.list.d/nodesource.list \
+  && apt-get update && apt-get install -y nodejs \
+  && npm install -g npm@latest \
   # Cleaning cache:
-RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* \
-  && pip install "poetry==$POETRY_VERSION" && poetry --version
+  && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+RUN pip install "poetry==$POETRY_VERSION" && poetry --version
 
 # Navigate to where your package.json is located
 WORKDIR /code/theme/static_src/
@@ -50,6 +53,7 @@ COPY theme/static_src/package*.json ./
 
 # Install dependencies
 RUN npm install
+#RUN npx update-browserslist-db@latest
 
 # Set work directory in the container
 WORKDIR /code
@@ -65,4 +69,11 @@ RUN poetry install --with dev
 COPY . .
 
 # Give execution rights to start script
-RUN chmod +x start.sh
+RUN chmod +x entrypoint.sh
+RUN chmod +x start-django.sh
+RUN chmod +x start-celery-worker.sh
+RUN chmod +x start-celery-beat.sh
+
+RUN python manage.py collectstatic --noinput
+
+ENTRYPOINT ["bash", "/code/entrypoint.sh"]

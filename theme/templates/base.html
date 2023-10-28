@@ -14,32 +14,34 @@
     <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'css/dist/styles.css' %}" rel="stylesheet" type="text/css">
 
-    {% tailwind_css %}
 </head>
 
 <body class="bg-gray-50 font-serif leading-normal tracking-normal">
 <div id="app" class="container mx-auto"> <!-- Vue.js will control everything inside this div -->
 
     <!-- Top Navbar -->
-    <nav class="flex items-center justify-between flex-wrap bg-teal-500 p-6">
+    <nav class="flex items-center justify-between flex-wrap bg-teal-500 p-6  border-b-2 border-b-teal-200">
         <!-- Logo and name on the left side -->
         <div class="flex items-center flex-shrink-0 text-white mr-6">
-            <!-- Make sure you replace 'your-logo-file.png' with your actual logo filename -->
-
-            <img src="{% static 'your-logo-file.png' %}" class="fill-current h-8 w-8 mr-2" width="54" height="54"/>
+            <img src="{% static 'img/usb-logo.svg' %}" class="fill-current mr-2" width="150"/>
             {#            <span class="font-semibold text-xl tracking-tight">Your Website</span>#}
-            <button @click="toggleSidebar" class="bg-amber-500">
+            <button @click="toggleSidebar" class="bg-amber-500 rounded-2xl">
                 toggle sidebar
             </button>
         </div>
         <!-- Menu -->
-        <div class="">
+        <div class="flex ml-8">
             <a href="{% url 'home' %}"
-               class="inline-block text-sm px-4 py-2 leading-none  text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">Home</a>
+               class="menu-item">
+                Home
+            </a>
+            <a href="{% url 'redcap_projects:project_list' %}"
+               class="menu-item">
+                Projects
+            </a>
             <a href="{% url 'home' %}"
-               class="inline-block text-sm px-4 py-2 leading-none  text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">About</a>
-            <a href="{% url 'home' %}"
-               class="inline-block text-sm px-4 py-2 leading-none  text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">Contact</a>
+               class="menu-item">Contact
+            </a>
         </div>
 
         <!-- User avatar/dropdown on the right side -->
@@ -64,14 +66,8 @@
                             <div class="py-1">
                                 <a href="{% url 'profile' %}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                                {% if user.coach %}
-                                    <a href="{% url 'coaches:coach_detail' user.coach.pk %}"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Coach Profile</a>
-                                {% elif user.client %}
-                                    <a href="{% url 'clients:client_detail' user.client.pk %}"
-                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Client
-                                        Profile</a>
-                                {% endif %}
+
+
                                 <a href="{% url 'account_logout' %}"
                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
 
@@ -90,7 +86,7 @@
     <div class="flex">
         <!-- Sidebar -->
         <div v-show="showSidebar"
-             class="flex-shrink-0 bg-blue-900 w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform transition duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-0">
+             class="flex-shrink-0 bg-teal-600 w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform transition duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-0">
             <a href="#" class="text-white block">
                 <i class="fas fa-home text-white"></i>
                 <span class="ml-2 text-white">Home</span>
@@ -98,17 +94,22 @@
             <!-- Here you can add more links for your sidebar -->
         </div>
 
-        <!-- Main content -->
-        <main class="flex-1 bg-white max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-            <!-- Include the main content block that child templates will overwrite -->
-            {% block content %}
-            {% endblock %}
-        </main>
+        <div class="flex flex-col w-full flex-1 overflow-hidden items-center justify-center">
+            <!-- Main content -->
+            <main class="flex flex-col px-8 py-4 w-full bg-gray-200">
+                <!-- Include the main content block that child templates will overwrite -->
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+
+    </div> <!-- End of Vue.js app -->
     <footer>
-        Made with ❤️in Switzerland
+        <div class="py-4 px-4 text-center min-h-100 bg-teal-500 border-t-2 border-t-teal-200">
+            Made with ❤️ in Switzerland
+        </div>
     </footer>
-    </div>
-</div> <!-- End of Vue.js app -->
+</div>
 
 <!-- Include Vue.js -->
 <script src="https://unpkg.com/vue@next"></script>
@@ -120,7 +121,7 @@
             return {
                 showDropdown: false,
                 showSidebar: false,
-            }
+            };
         },
         methods: {
             toggleDropdown() {
@@ -133,7 +134,7 @@
         components: {
             {#'video-watch': VideoWatchComponent#}
         }
-    })
+    });
 
     app.mount('#app');
 </script>
@@ -144,4 +145,3 @@
 {#				<h1 class="text-5xl">Django + Tailwind = ❤️</h1>#}
 {#			</section>#}
 {#		</div>#}
-
