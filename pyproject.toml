@@ -10,38 +10,36 @@ python = "^3.11"
 django = "^4.2.6"
 djangorestframework = "^3.14.0"
 psycopg2-binary = "^2.9.7"
-django-allauth = "^0.57.0"
+django-allauth = "^0.58.2"
 pillow = "^10.0.0"
 django-crispy-forms = "^2.0"
-# for django-tailwind, run python manage.py tailwind init
-django-tailwind = { extras = ["reload"], version = "^3.6.0" }
-crispy-tailwind = "^0.5.0"
 fontawesome = "^5.10.1.post1"
 uuid = "^1.30"
 fontawesomefree = "^6.4.2"
 drf-spectacular = { extras = ["sidecar"], version = "^0.26.5" }
 
-#dramatiq = {version = "^1.14.2", extras = ["rabbitmq"]}
-#django-dramatiq = "^0.11.5"
 watchdog = "^3.0.0"
-
 
 django-model2puml = "^0.4.1"
 celery = "^5.3.4"
 redis = "^5.0.1"
 kombu = "^5.3.2"
 django-celery-beat = "^2.5.0"
-
+django-static-fontawesome = "^6.4.2.1"
+gunicorn = "^21.2.0"
+environs = { extras = ["django"], version="^9.5.0" }
 
 [tool.poetry.dev-dependencies]
 pytest-django = "^4.5.2"
-pylint = "^2.17.4"
+pylint = "^3.0.2"
 pylint-django = "^2.5.3"
 pytest = "^7.4.0"
 pytest-cov = "^4.1.0"
 uml-django = "^1.0.2"
 django-debug-toolbar = "^4.2.0"
 black = "^23.9.1"
+django-browser-reload = "^1.12.1"
+
 
 [build-system]
 requires = ["poetry-core"]

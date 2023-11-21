@@ -9,13 +9,12 @@ localhost {
       file_server
     }
 
-  @app {
-    not path /theme/static/*
-    not path /static/*
-    not path /media/*
+  @django {
+    path /api/* /admin/* /anything-but-admin/*
   }
 
-  reverse_proxy @app {
+  reverse_proxy @django {
     to web:8000
   }
+
 }

@@ -12,18 +12,25 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from environs import Env
+
+env = Env()
+#env.read_env() # read .env.dev file, only needed if docker-compose is not used
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env.bool("DJANGO_DEBUG", default=False)
+#DEBUG = os.getenv("DEBUG", "False")
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-t6+omar1zgaca^&%aeg#^he$q&&s5@&e%l&$a&rt3f^2%(-czb"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#SECRET_KEY = env('DJANGO_SECRET_KEY')
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -31,8 +38,19 @@ ALLOWED_HOSTS = [
 ]
 # needed with caddy
 CSRF_TRUSTED_ORIGINS = [
-    "https://localhost",
+    'https://localhost',
 ]
+
+# Deployment security
+SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
+SECURE_HSTS_SECONDS = env.int("DJANGO_SECURE_HSTS_SECONDS", default=2592000)  # 30 days
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool("DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS", default=True)
+SECURE_HSTS_PRELOAD = env.bool("DJANGO_SECURE_HSTS_PRELOAD", default=True)
+
+SESSION_COOKIE_SECURE = env.bool("DJANGO_SESSION_COOKIE_SECURE", default=True)
+CSRF_COOKIE_SECURE = env.bool("DJANGO_CSRF_COOKIE_SECURE", default=True)
+
+DJANGO_ADMIN_URL = env.str("DJANGO_ADMIN_URL", default="manage/")
 
 # Application definition
 
@@ -44,14 +62,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.messages",
     "django.contrib.sites",
-    # 'django_dramatiq',  # django_dramatiq should be placed before your apps
     "crispy_forms",
-    "crispy_tailwind",
-    "tailwind",
-    "theme",
-    "django_browser_reload",
     "fontawesomefree",
+    "django_static_fontawesome",
     "debug_toolbar",
+    "django_browser_reload",
     "puml_generator",
     # allauth
     "allauth",
@@ -70,14 +85,6 @@ INSTALLED_APPS = [
     "user_profile.apps.UserProfileConfig",
     "api.apps.ApiConfig",
 ]
-
-
-CRISPY_TEMPLATE_PACK = "tailwind"
-CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
-TAILWIND_APP_NAME = "theme"
-NPM_BIN_PATH = "/usr/bin/npm"
-TAILWIND_DEV_MODE = False
-TAILWIND_CSS_PATH = "theme/static/css/dist/styles.css"
 
 AUTH_USER_MODEL = "accounts.User"
 
@@ -133,11 +140,11 @@ WSGI_APPLICATION = "vidjango.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "db",
-        "PORT": "5432",
+        "NAME": env("DB_NAME", default="postgres"),
+        "USER": env("DB_USER", default="postgres"),
+        "PASSWORD": env("DB_PASSWORD", default="postgres"),
+        "HOST": env("DB_HOST", default="db"),
+        "PORT": env("DB_PORT", default="5432"),
     }
 }
 
@@ -172,7 +179,7 @@ AUTHENTICATION_BACKENDS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Zurich"
 
 USE_I18N = True
 
@@ -183,10 +190,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    os.path.join(BASE_DIR, "theme/static/css/dist"),
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),
+                    ]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Media Folder Settings
@@ -215,7 +220,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 #     ]
 # }
 
-INTERNAL_IPS = ["127.0.0.1", "172.20.0.9"]
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "172.20.0.9"
+]
 
 if DEBUG:
     import socket  # only if you haven't already imported this
@@ -224,7 +232,7 @@ if DEBUG:
     INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
         "127.0.0.1",
         "10.0.2.2",
-        "172.20.0.9",  # caddy: use docker
+        "172.20.0.9", # caddy: use docker
     ]  # noqa
 
 
